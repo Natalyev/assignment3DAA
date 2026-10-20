@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Missions 4 and 5. The slides: a directed graph. Cells are 0 .. n-1, slide i goes from s.from()[i] to s.to()[i]
@@ -81,7 +84,34 @@ public class Zones {
      * [1] the cost of the cheapest route from the zone of cell 0 to the zone of the last cell.
      */
     public static long[] routes(Input.Slides s, int[] zoneOf, int zoneCount) {
-        // TODO
-        return new long[]{0, 0};
+        ArrayList<Map<Integer, Integer>> graph = new ArrayList<>();
+        for (int z = 0; z < zoneCount; z++) graph.add(new HashMap<>());
+        for (int i = 0; i < s.count(); i++) {
+            int from = zoneOf[s.from()[i]];
+            int to = zoneOf[s.to()[i]];
+            if (from == to) continue;
+            Map<Integer, Integer> edges = graph.get(from);
+            Integer old = edges.get(to);
+            if (old == null || s.time()[i] < old) edges.put(to, s.time()[i]);
+        }
+
+        long[] distance = new long[zoneCount];
+        Arrays.fill(distance, Long.MAX_VALUE);
+        distance[zoneOf[0]] = 0;
+        int[] stages = new int[zoneCount];
+        Arrays.fill(stages, 1); // A chain may start at any zone.
+        int longest = 0;
+        for (int from = 0; from < zoneCount; from++) {
+            longest = Math.max(longest, stages[from]);
+            for (Map.Entry<Integer, Integer> edge : graph.get(from).entrySet()) {
+                int to = edge.getKey();
+                stages[to] = Math.max(stages[to], stages[from] + 1);
+                if (distance[from] != Long.MAX_VALUE) {
+                    long cost = distance[from] + edge.getValue();
+                    distance[to] = Math.min(distance[to], cost);
+                }
+            }
+        }
+        return new long[]{longest, distance[zoneOf[s.n() - 1]]};
     }
 }
