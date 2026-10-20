@@ -1,0 +1,4 @@
+size   kruskal_ms (5 runs, then average)   prim_ms (5 runs, then average)
+100    44 26 41 46 49  avg 41    55 16 20 16 9  avg 23
+300    282 187 152 171 126  avg 183    155 171 204 169 158  avg 171
+1000   2625 2588 2638 2636 2597  avg 2617    3765 3536 3900 3851 3756  avg 3762
