@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Missions 4 and 5. The slides: a directed graph. Cells are 0 .. n-1, slide i goes from s.from()[i] to s.to()[i]
  * and takes s.time()[i]. There are no slides from a cell to itself, and the exit can always be reached from the start.
@@ -19,8 +21,57 @@ public class Zones {
      * Is DAG in Main is 1 when the number of zones equals the number of cells (no cycle), so you do not need a separate check.
      */
     public static int[] kosaraju(Input.Slides s) {
-        // TODO
-        return new int[s.n()];
+        int n = s.n();
+        int[][] outgoing = Graphs.slidesFrom(s);
+        int[][] incoming = Graphs.slidesInto(s);
+        boolean[] visited = new boolean[n];
+        int[] stack = new int[n];
+        int[] nextEdge = new int[n];
+        int[] finished = new int[n];
+        int count = 0;
+        for (int start = 0; start < n; start++) {
+            if (visited[start]) continue;
+            int top = 0;
+            stack[0] = start;
+            visited[start] = true;
+            while (top >= 0) {
+                int v = stack[top];
+                if (nextEdge[v] == outgoing[v].length) {
+                    finished[count++] = v;
+                    top--;
+                } else {
+                    int edge = outgoing[v][nextEdge[v]++];
+                    int next = s.to()[edge];
+                    if (!visited[next]) {
+                        visited[next] = true;
+                        stack[++top] = next;
+                    }
+                }
+            }
+        }
+
+        int[] zoneOf = new int[n];
+        Arrays.fill(zoneOf, -1);
+        int zone = 0;
+        for (int i = count - 1; i >= 0; i--) {
+            int start = finished[i];
+            if (zoneOf[start] != -1) continue;
+            int size = 0;
+            stack[size++] = start;
+            zoneOf[start] = zone;
+            while (size > 0) {
+                int v = stack[--size];
+                for (int edge : incoming[v]) {
+                    int next = s.from()[edge];
+                    if (zoneOf[next] == -1) {
+                        zoneOf[next] = zone;
+                        stack[size++] = next;
+                    }
+                }
+            }
+            zone++;
+        }
+        return zoneOf;
     }
 
     /**
