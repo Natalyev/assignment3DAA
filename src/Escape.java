@@ -16,7 +16,54 @@ public class Escape {
     public record Result(int[] path, int visited, int deadEnds) {}
 
     public static Result escape(Input.Walls w, int[] broken) {
-        // TODO
-        return new Result(new int[0], 0, 0);
+        int[][] graph = Graphs.open(w, broken);
+        int n = w.cells();
+        int deadEnds = 0;
+        for (int[] neighbours : graph) {
+            if (neighbours.length == 1) deadEnds++;
+        }
+        boolean[] visited = new boolean[n];
+        int[] stack = new int[n];
+        int[] direction = new int[n];
+        int top = 0;
+        int count = 1;
+        stack[0] = 0;
+        visited[0] = true;
+
+        // Each frame remembers the next direction, just like recursive DFS.
+        while (top >= 0) {
+            int cell = stack[top];
+            if (cell == n - 1) {
+                return new Result(java.util.Arrays.copyOf(stack, top + 1), count, deadEnds);
+            }
+            if (direction[top] == 4) {
+                top--;
+                continue;
+            }
+            int next = neighbour(cell, direction[top]++, w.rows(), w.cols());
+            if (next < 0 || visited[next]) continue;
+            boolean open = false;
+            for (int v : graph[cell]) {
+                if (v == next) open = true;
+            }
+            if (!open) continue;
+            visited[next] = true;
+            count++;
+            top++;
+            stack[top] = next;
+            direction[top] = 0;
+        }
+        return new Result(new int[0], count, deadEnds);
+    }
+
+    private static int neighbour(int cell, int direction, int rows, int cols) {
+        int row = cell / cols;
+        int col = cell % cols;
+        return switch (direction) {
+            case 0 -> row > 0 ? cell - cols : -1;
+            case 1 -> col + 1 < cols ? cell + 1 : -1;
+            case 2 -> row + 1 < rows ? cell + cols : -1;
+            default -> col > 0 ? cell - 1 : -1;
+        };
     }
 }
