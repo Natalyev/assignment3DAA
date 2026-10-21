@@ -22,7 +22,6 @@ public class DisjointSet {
     public int find(int x) {
         int root = x;
         while (parent[root] != root) root = parent[root];
-        // Point every vertex on the path directly at the root.
         while (x != root) {
             int next = parent[x];
             parent[x] = root;

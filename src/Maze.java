@@ -76,7 +76,6 @@ public class Maze {
                 if (!visited[other]) queue.add(k);
             }
             if (taken == n - 1) break;
-            // Discard old edges whose two endpoints are already in the tree.
             while (!queue.isEmpty()) {
                 int k = queue.peek();
                 if (!visited[w.a()[k]] || !visited[w.b()[k]]) break;

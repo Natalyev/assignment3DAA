@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-/** Independent small-graph checks and a million-cell stack-safety check. */
 public class AlgorithmTest {
     static void check(boolean ok, String message) {
         if (!ok) throw new AssertionError(message);
@@ -14,7 +13,6 @@ public class AlgorithmTest {
         return sum;
     }
 
-    // Exhaust all subsets on a tiny grid; connectivity is checked without DSU.
     static long bruteMst(Input.Walls w) {
         long best = Long.MAX_VALUE;
         for (int mask = 0; mask < (1 << w.count()); mask++) {
@@ -101,7 +99,6 @@ public class AlgorithmTest {
         for (int trial = 0; trial < 200; trial++) {
             int n = 1 + random.nextInt(8);
             ArrayList<Integer> from = new ArrayList<>(), to = new ArrayList<>(), time = new ArrayList<>();
-            // Ensure the last cell is reachable; extra edges create cycles and duplicates.
             for (int i = 0; i < n - 1; i++) {
                 from.add(i); to.add(i + 1); time.add(1 + random.nextInt(20));
             }

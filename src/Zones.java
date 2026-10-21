@@ -99,7 +99,7 @@ public class Zones {
         Arrays.fill(distance, Long.MAX_VALUE);
         distance[zoneOf[0]] = 0;
         int[] stages = new int[zoneCount];
-        Arrays.fill(stages, 1); // A chain may start at any zone.
+        Arrays.fill(stages, 1);
         int longest = 0;
         for (int from = 0; from < zoneCount; from++) {
             longest = Math.max(longest, stages[from]);

@@ -30,7 +30,6 @@ public class Escape {
         stack[0] = 0;
         visited[0] = true;
 
-        // Each frame remembers the next direction, just like recursive DFS.
         while (top >= 0) {
             int cell = stack[top];
             if (cell == n - 1) {
